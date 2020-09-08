@@ -19,15 +19,16 @@ const masterTicketList = [
   }
 ];
 
-function TicketList(){
+function TicketList() {
   return (
     <React.Fragment>
-      <hr/>
+      <hr />
       {masterTicketList.map((ticket, index) =>
-        <Ticket names={ticket.names}
+        <Ticket 
+          names={ticket.names}
           location={ticket.location}
           issue={ticket.issue}
-          key={index}/>
+          key={index} />
       )}
     </React.Fragment>
   );
