@@ -7,31 +7,69 @@ class TicketControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formVisibleOnPage: false
+      currentPage: "list",
+      // currentPage: "update",
+      masterTicketList: [],
+      currentTicketId: null
     };
+    // this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleUpdateTicket = (updateTicket) => {
+    const newMasterTicketList = this.state.masterTicketList.map((tickets) => {
+      if (tickets.id === updateTicket.id) {
+        return updateTicket;
+      } else {
+        return tickets;
+      }
+    });
+    this.setState({currentPage: "list", masterTicketList: newMasterTicketList });
+  }
+
+  handleAddingNewTicketToList = (newTicket) => {
+    const newMasterTicketList = this.state.masterTicketList.concat(newTicket);
+    // const newMasterTicketList = [...this.state.masterTicketList, newTicket];
+    this.setState({
+      masterTicketList: newMasterTicketList, 
+      currentPage: "list"
+    });
+  }
+
+  handleUpdateClick = (key) => {
+    this.setState({currentPage: 'updateTicketForm', currentTicketId: key });
   }
 
   handleClick = () => {
-    this.setState(prevState => ({
-      formVisibleOnPage: !prevState.formVisibleOnPage
-    }));
+    if (this.state.currentPage === 'list') {
+      this.setState({currentPage: 'newTicketForm', currentTicketId: null });
+    } else {
+      this.setState({currentPage: 'list', currentTicketId: null});
+    }
   }
   // We recommend experimenting with adding counters, booleans, and other states that need updating to your applications to get more practice with this slightly more complex implementation of setState(). (What the hell?)
 
   render(){
     let currentlyVisibleState = null;
-    let buttonText = null;
-    if (this.state.formVisibleOnPage) {
-      currentlyVisibleState = <NewTicketForm />
-      buttonText = "Return to Ticket List";
-    } else {
-      currentlyVisibleState = <TicketList />
-      buttonText = 'Add Ticket';
+    if (this.state.currentPage === 'newTicketForm') {
+      currentlyVisibleState = <NewTicketForm 
+                                onNewTicketCreation={this.handleAddingNewTicketToList}
+                                onClick = {this.handleClick}
+                                update = {false} />
+    } else if (this.state.currentPage === 'list') {
+      currentlyVisibleState = <TicketList 
+                                ticketList={this.state.masterTicketList} 
+                                onClick={this.handleClick} 
+                                onUpdateClick={this.handleUpdateClick} />
+    } else if (this.state.currentPage === 'updateTicketForm') {
+      currentlyVisibleState = <NewTicketForm
+                                onUpdateTicket={this.handleUpdateTicket}
+                                onClick = {this.handleClick}
+                                update = {true}
+                                ticketId = {this.state.currentTicketId} />
     }
     return (
       <React.Fragment>
         {currentlyVisibleState}
-        <button onClick={this.handleClick}>{buttonText}</button>
       </React.Fragment>
     );
   }
