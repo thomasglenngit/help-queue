@@ -14,7 +14,8 @@ function TicketList(props) {
           issue={ticket.issue}
           ticketId = {ticket.id}
           key={ticket.id} 
-          onUpdateClick={props.onUpdateClick} />
+          onUpdateClick={props.onUpdateClick}
+          onDeleteClick={props.onDeleteClick} />
       )}
       <button onClick={props.onClick}>Add Ticket</button>
     </React.Fragment>
@@ -24,7 +25,8 @@ function TicketList(props) {
 TicketList.propTypes = {
   ticketList: PropTypes.array,
   onClick: PropTypes.func,
-  onUpdateClick: PropTypes.func
+  onUpdateClick: PropTypes.func,
+  onDeleteClick: PropTypes.func
 };
 
 export default TicketList;

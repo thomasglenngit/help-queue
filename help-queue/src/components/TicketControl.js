@@ -35,16 +35,24 @@ class TicketControl extends React.Component {
     });
   }
 
-  handleUpdateClick = (key) => {
-    this.setState({currentPage: 'updateTicketForm', currentTicketId: key });
-  }
-
   handleClick = () => {
     if (this.state.currentPage === 'list') {
       this.setState({currentPage: 'newTicketForm', currentTicketId: null });
     } else {
       this.setState({currentPage: 'list', currentTicketId: null});
     }
+  }
+
+  handleUpdateClick = (key) => {
+    this.setState({currentPage: 'updateTicketForm', currentTicketId: key });
+  }
+
+  handleDeletingTicket = (id) => {
+    const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
+    this.setState({
+      masterTicketList: newMasterTicketList,
+      currentPage: "list"
+    });
   }
   // We recommend experimenting with adding counters, booleans, and other states that need updating to your applications to get more practice with this slightly more complex implementation of setState(). (What the hell?)
 
@@ -59,7 +67,8 @@ class TicketControl extends React.Component {
       currentlyVisibleState = <TicketList 
                                 ticketList={this.state.masterTicketList} 
                                 onClick={this.handleClick} 
-                                onUpdateClick={this.handleUpdateClick} />
+                                onUpdateClick={this.handleUpdateClick}
+                                onDeleteClick={this.handleDeletingTicket} />
     } else if (this.state.currentPage === 'updateTicketForm') {
       currentlyVisibleState = <NewTicketForm
                                 onUpdateTicket={this.handleUpdateTicket}
