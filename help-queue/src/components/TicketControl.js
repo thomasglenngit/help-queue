@@ -8,11 +8,9 @@ class TicketControl extends React.Component {
     super(props);
     this.state = {
       currentPage: "list",
-      // currentPage: "update",
       masterTicketList: [],
       currentTicketId: null
     };
-    // this.handleClick = this.handleClick.bind(this);
   }
 
   handleUpdateTicket = (updateTicket) => {
@@ -28,7 +26,6 @@ class TicketControl extends React.Component {
 
   handleAddingNewTicketToList = (newTicket) => {
     const newMasterTicketList = this.state.masterTicketList.concat(newTicket);
-    // const newMasterTicketList = [...this.state.masterTicketList, newTicket];
     this.setState({
       masterTicketList: newMasterTicketList, 
       currentPage: "list"
