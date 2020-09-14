@@ -1,17 +1,20 @@
 import React from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
+import { connect } from 'react-redux';
 
 class TicketControl extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
-      currentPage: "list",
-      masterTicketList: [],
-      currentTicketId: null
-    };
-  }
+      formVisibleOnPage: false,
+      selectedTicket: null,
+      editing: false
+      };
+    }
+  
 
   handleUpdateTicket = (updateTicket) => {
     const newMasterTicketList = this.state.masterTicketList.map((tickets) => {
@@ -24,12 +27,35 @@ class TicketControl extends React.Component {
     this.setState({currentPage: "list", masterTicketList: newMasterTicketList });
   }
 
-  handleAddingNewTicketToList = (newTicket) => {
-    const newMasterTicketList = this.state.masterTicketList.concat(newTicket);
+  handleEditingTicket = (ticketToEdit) => {
+    const { dispatch } = this.props;
+    const { id, names, location, issue } = ticketToEdit;
+    const action = {
+      type: 'ADD_TICKET',
+      id: id,
+      names: names,
+      location: location,
+      issue: issue,
+    }
+    dispatch(action);
     this.setState({
-      masterTicketList: newMasterTicketList, 
-      currentPage: "list"
-    });
+      editing: false,
+      selectedTicket: null
+    })
+  }
+
+  handleAddingNewTicketToList = (newTicket) => {
+    const { dispatch } = this.props;
+    const { id, names, location, issue } = newTicket; //passes the values directly into our action.
+    const action = {
+      type: 'ADD_TICKET',
+      id: id,
+      names: names,
+      location: location,
+      issue: issue,
+    }
+    dispatch(action);
+    this.setState({formVisibleOnPage: false});
   }
 
   handleClick = () => {
@@ -45,13 +71,17 @@ class TicketControl extends React.Component {
   }
 
   handleDeletingTicket = (id) => {
-    const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
-    this.setState({
-      masterTicketList: newMasterTicketList,
-      currentPage: "list"
+    const { dispatch } = this.props;
+    const action = {
+      type: 'DELETE_TICKET',
+      id: id,
+    }
+    dispatch(action);
+    this.setState({selectedTicket: null
+    
     });
   }
-  // We recommend experimenting with adding counters, booleans, and other states that need updating to your applications to get more practice with this slightly more complex implementation of setState(). (What the hell?)
+
 
   render(){
     let currentlyVisibleState = null;
@@ -78,8 +108,10 @@ class TicketControl extends React.Component {
         {currentlyVisibleState}
       </React.Fragment>
     );
-  }
+  };
 
 }
+
+TicketControl = connect() (TicketControl);
 
 export default TicketControl;
