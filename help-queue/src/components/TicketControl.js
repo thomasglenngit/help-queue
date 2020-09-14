@@ -2,6 +2,8 @@ import React from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import { connect } from 'react-redux';
+import PropTypes from "prop-types";
+import Ticket from './Ticket';
 
 class TicketControl extends React.Component {
 
@@ -58,6 +60,11 @@ class TicketControl extends React.Component {
     this.setState({formVisibleOnPage: false});
   }
 
+  handleChangingSelectedTicket = (id) => {
+    const selectedTicket = this.props.masterTicketList[id];
+    this.setState({selectedTicket: selectedTicket});
+  }
+
   handleClick = () => {
     if (this.state.currentPage === 'list') {
       this.setState({currentPage: 'newTicketForm', currentTicketId: null });
@@ -92,7 +99,8 @@ class TicketControl extends React.Component {
                                 update = {false} />
     } else if (this.state.currentPage === 'list') {
       currentlyVisibleState = <TicketList 
-                                ticketList={this.state.masterTicketList} 
+                                ticketList={this.props.masterTicketList} 
+                                onTicketSelection={this.handleChangingSelectedTicket}
                                 onClick={this.handleClick} 
                                 onUpdateClick={this.handleUpdateClick}
                                 onDeleteClick={this.handleDeletingTicket} />
@@ -112,6 +120,37 @@ class TicketControl extends React.Component {
 
 }
 
-TicketControl = connect() (TicketControl);
+function TicketList(props){
+  return (
+    <React.Fragment>
+      <hr />
+      {/* We now need to map over the values of an object, not an array. */}
+      {Object.values(props.ticketList).map((ticket) => {
+        // Make sure to explicitly return the Ticket object this time! We will explain why below.
+        return <Ticket
+          whenTicketClicked={props.onTicketSelection}
+          names={ticket.names}
+          location={ticket.location}
+          issue={ticket.issue}
+          id={ticket.id}
+          key={ticket.id} />
+      })}
+      
+    </React.Fragment>
+  );
+}
+
+TicketControl.propTypes = {
+  ticketList: PropTypes.object,
+  onTicketSelection: PropTypes.func
+};
+
+const mapStateToProps = state => {
+  return {
+    masterTicketList: state
+  }
+}
+
+TicketControl = connect(mapStateToProps) (TicketControl);
 
 export default TicketControl;
